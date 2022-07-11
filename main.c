@@ -1,7 +1,7 @@
 
 
 #include <xc.h>
-
+#include"config.h"
 
 
  
@@ -13,7 +13,7 @@
  
 unsigned char Check=0;
 unsigned char Segments_Code[10] = {0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
-unsigned int SevenSeg1_Digits[4] = {0,0,0,0};
+unsigned int Digits[4] = {0,0,0,0};
  
 void TMR1_Init();
 void SevenSeg1_Init();
@@ -54,7 +54,7 @@ void __interrupt() ISR(void)
       PORTCbits.RC1 =0;
       PORTCbits.RC2 =0;
       PORTCbits.RC3 =0;
-      SevenSeg1 = Segments_Code[SevenSeg1_Digits[0]];
+      SevenSeg1 = Segments_Code[Digits[0]];
     }
     if(Check==1)
     {
@@ -63,7 +63,7 @@ void __interrupt() ISR(void)
       PORTCbits.RC1 =1;
       PORTCbits.RC2 =0;
       PORTCbits.RC3 =0;
-      SevenSeg1 = Segments_Code[SevenSeg1_Digits[1]];
+      SevenSeg1 = Segments_Code[Digits[1]];
     }
     if(Check==2)
     {
@@ -72,7 +72,7 @@ void __interrupt() ISR(void)
       PORTCbits.RC1 =0;
       PORTCbits.RC2 =1;
       PORTCbits.RC3 =0;
-      SevenSeg1 = Segments_Code[SevenSeg1_Digits[2]];
+      SevenSeg1 = Segments_Code[Digits[2]];
     }
     if(Check==3)
     {
@@ -81,7 +81,7 @@ void __interrupt() ISR(void)
       PORTCbits.RC1 =0;
       PORTCbits.RC2 =0;
       PORTCbits.RC3 =1;
-      SevenSeg1 = Segments_Code[SevenSeg1_Digits[3]];
+      SevenSeg1 = Segments_Code[Digits[3]];
     }
     
   Check++;
@@ -91,12 +91,9 @@ void __interrupt() ISR(void)
     TMR1 = PreLoad; // Preloading Timer1
   }
 }
-//----------[ END OF ISR ]-----------
-//===================================
-// Functions' Definitions
 void TMR1_Init()
 {
-  // -- [[ Configure Timer1 To Operate In Timer Mode ]] --
+ 
   // Preload TMR1 Register Pair
   TMR1 = PreLoad;
   // Choose the local clock source (timer mode)
@@ -122,19 +119,19 @@ void SevenSeg1_Init()
 void SevenSeg1_Write(unsigned int num)
 {
  
-    SevenSeg1_Digits[0] = num / 1000;
+    Digits[0] = num / 1000;
     num%=1000;
-    SevenSeg1_Digits[1] = num / 100;
+    Digits[1] = num / 100;
     num%=100;
-    SevenSeg1_Digits[2] = num / 10;
+    Digits[2] = num / 10;
     num%=10;
-    SevenSeg1_Digits[3]=num;
+    Digits[3]=num;
     
  }
 void ADC_Init()
 {
     
-    ADCON0 = 0x01000001;
-    ADC0N1 = 
+    ADCON0= 0b01000001;
+    
     
 }
