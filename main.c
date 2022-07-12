@@ -1,6 +1,7 @@
 
 
 #include <xc.h>
+#include <pic16f887.h>
 #include"config.h"
 
 
@@ -18,10 +19,12 @@ unsigned int Digits[4] = {0,0,0,0};
 void TMR1_Init();
 void SevenSeg1_Init();
 void SevenSeg1_Write(unsigned int);
-void ADC_Init();
-
+void ADC_Init(void);
+float ADC_Read();
  
 void main(void) {
+    float ADC_value;
+    unsigned int ADC_Convert;
  
   SevenSeg1_Init();
    
@@ -34,11 +37,15 @@ void main(void) {
    PORTCbits.RC2=0;
    PORTCbits.RC3=0;
    
-   ADON =0;
+   
+   ADC_Init();
   while(1)
   {
-    __delay_ms(1000);
-    SevenSeg1_Write(1111);
+      ADC_value = ADC_Read();
+      ADC_Convert = (unsigned int )(ADC_value*100);
+      SevenSeg1_Write(ADC_Convert);
+      __delay_ms(100);
+      
   }
   return;
 }
@@ -64,6 +71,7 @@ void __interrupt() ISR(void)
       PORTCbits.RC2 =0;
       PORTCbits.RC3 =0;
       SevenSeg1 = Segments_Code[Digits[1]];
+      PORTDbits.RD7 =1;
     }
     if(Check==2)
     {
@@ -128,10 +136,18 @@ void SevenSeg1_Write(unsigned int num)
     Digits[3]=num;
     
  }
-void ADC_Init()
+void ADC_Init(void)
 {
     
     ADCON0= 0b01000001;
+    ADCON1 =0b11000000;
     
-    
+}
+float ADC_Read(void)
+{    
+float adc_data=0;    
+while(ADCON0bits.GO_DONE==1);         //higher bit data start conversion adc value
+adc_data = (ADRESL)+(ADRESH<<8);     //Store 10-bit output                           
+adc_data =((adc_data/204.6)*5.0);                       
+return adc_data;
 }
