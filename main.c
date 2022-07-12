@@ -24,7 +24,8 @@ float ADC_Read();
  
 void main(void) {
     float ADC_value;
-    unsigned int ADC_Convert;
+ 
+    float Vin;
  
   SevenSeg1_Init();
    
@@ -42,8 +43,9 @@ void main(void) {
   while(1)
   {
       ADC_value = ADC_Read();
-      ADC_Convert = (unsigned int )(ADC_value*100);
-      SevenSeg1_Write(ADC_Convert);
+      Vin = (ADC_value/204.6)*5.0;
+      
+      SevenSeg1_Write((unsigned int )(Vin*100));
       __delay_ms(100);
       
   }
@@ -143,11 +145,13 @@ void ADC_Init(void)
     ADCON1 =0b11000000;
     
 }
-float ADC_Read(void)
-{    
-float adc_data=0;    
-while(ADCON0bits.GO_DONE==1);         //higher bit data start conversion adc value
-adc_data = (ADRESL)+(ADRESH<<8);     //Store 10-bit output                           
-adc_data =((adc_data/204.6)*5.0);                       
-return adc_data;
+float ADC_read() 
+{
+   
+   ADCON0 &= 0xC5; 
+   ADCON0 |= 0 << 3; 
+   __delay_ms(30);
+   GO_nDONE = 1; 
+   while (GO_nDONE);  
+   return ((ADRESH << 8) + ADRESL); 
 }
