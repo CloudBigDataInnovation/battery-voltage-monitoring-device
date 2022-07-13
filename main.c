@@ -1,8 +1,17 @@
+\/*
+ * File:   demo2.c
+ * Author: namphan22
+ *
+ * Created on July 13, 2022, 8:35 AM
+ */
 
 
 #include <xc.h>
-#include <pic16f887.h>
 #include"config.h"
+
+
+
+
 
 
  
@@ -20,36 +29,33 @@ void TMR1_Init();
 void SevenSeg1_Init();
 void SevenSeg1_Write(unsigned int);
 void ADC_Init(void);
-float ADC_Read();
+unsigned int ADC_Read();
  
 void main(void) {
-    float ADC_value;
- 
-    float Vin;
- 
-  SevenSeg1_Init();
+    ADC_Init();
+    SevenSeg1_Init();
+    unsigned int analog_to_digital;
+    float Voltage_input;
+    
+    TRISCbits.TRISC0 = 0;
+    TRISCbits.TRISC1 = 0;
+    TRISCbits.TRISC2 = 0;
+    TRISCbits.TRISC3 = 0;
+    
+    PORTCbits.RC0 = 0;
+    PORTCbits.RC1 =0;
+    PORTCbits.RC2 =0;
+    PORTCbits.RC3 =0;
+    
+    while(1)
+    {
+        analog_to_digital = ADC_Read();
+        
+    }
+        
+    
    
-   TRISC0 =0;
-   TRISC1=0;
-   TRISC2=0;
-   TRISC3=0;
-   PORTCbits.RC0=0;
-   PORTCbits.RC1=0;
-   PORTCbits.RC2=0;
-   PORTCbits.RC3=0;
-   
-   
-   ADC_Init();
-  while(1)
-  {
-      ADC_value = ADC_Read();
-      Vin = (ADC_value/204.6)*5.0;
-      
-      SevenSeg1_Write((unsigned int )(Vin*100));
-      __delay_ms(100);
-      
-  }
-  return;
+
 }
 
 void __interrupt() ISR(void)
@@ -113,7 +119,7 @@ void TMR1_Init()
   T1CKPS1 = 0;
   // Switch ON Timer1 Module!
   TMR1ON = 1;
-  // Config TMR1 Interrupt
+  
   TMR1IE = 1;
   TMR1IF = 0;
   PEIE = 1;
@@ -145,12 +151,12 @@ void ADC_Init(void)
     ADCON1 =0b11000000;
     
 }
-float ADC_read() 
+unsigned int ADC_read() 
 {
    
    ADCON0 &= 0xC5; 
    ADCON0 |= 0 << 3; 
-   __delay_ms(30);
+   __delay_ms(2);
    GO_nDONE = 1; 
    while (GO_nDONE);  
    return ((ADRESH << 8) + ADRESL); 
