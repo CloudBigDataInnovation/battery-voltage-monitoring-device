@@ -4,11 +4,6 @@
 #include"config.h"
 
 
-
-
-
-
- 
 #define _XTAL_FREQ 8000000
 #define PreLoad 55535
 #define SevenSeg1 PORTD
