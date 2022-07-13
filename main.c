@@ -1,9 +1,3 @@
-\/*
- * File:   demo2.c
- * Author: namphan22
- *
- * Created on July 13, 2022, 8:35 AM
- */
 
 
 #include <xc.h>
