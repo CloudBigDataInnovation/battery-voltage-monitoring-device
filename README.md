@@ -1,10 +1,15 @@
-## battery voltage monitoring device
-## Demo in proteus
+## Project title
+<p>Thiết bị đo điện áp pin sử dụng vi điều khiển PIC16F887</p>
+## Installation
+<p> git clone https://github.com/namphan22/battery-voltage-monitoring-device.git</p>
+## Author
+<p>Nam Phan</p>
+## Support
+<p> For support,email to phanvanhoainam22@gmail.com</p>
+## Screenshoots
+![image](https://user-images.githubusercontent.com/84735778/180500130-8f463614-feb9-469e-985d-34ec90ab7210.png)
 
-
-https://user-images.githubusercontent.com/84735778/180481556-94fd8ad2-037e-495e-948b-917e5360dea1.mp4
-
-## Circuit design in Altium Application
 ![186e7048156dd7338e7c](https://user-images.githubusercontent.com/84735778/180481813-bdcdb72e-ad8f-4061-92e9-81de6003b4c5.jpg)
 
-## MPLAB IDE for programming PIC16F887
+## Tool
+<p>1. MPLAB IDE <br> 2.Altium <br> 3.Proteus</p>
