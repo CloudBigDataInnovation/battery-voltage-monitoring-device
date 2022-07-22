@@ -32,9 +32,9 @@ int ADC_Read(int ADC_channel);
 
 void main(void) {
     
-    TMR0 =0;
-    OPTION_REG = 0x83;
-    INTCON=0xA0;
+    TMR0 =0;// timer0 reset bit
+    OPTION_REG = 0x83; // select prescalar value 1:16 for timer0
+    INTCON=0xA0;//turn on global interrupt and timer0 overflow interrupt
     
     SevenSeg1_D = 0x00;
     SevenSeg1 = 0x00;
