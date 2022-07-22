@@ -1,10 +1,5 @@
 ## Project title
 Device monitor battery voltage using  PIC16F887 microcontroller.
-
-## Installation
- git clone https://github.com/namphan22/battery-voltage-monitoring-device.git
-
-
 ## Support
  For support,email to phanvanhoainam22@gmail.com
 ## Screenshoots
