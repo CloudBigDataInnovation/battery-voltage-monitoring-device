@@ -1,5 +1,5 @@
 ## Project title
-Device monitor battery voltage sử dụng vi điều khiển PIC16F887
+Device monitor battery voltage using  PIC16F887 microcontroller.
 
 ## Installation
  git clone https://github.com/namphan22/battery-voltage-monitoring-device.git
