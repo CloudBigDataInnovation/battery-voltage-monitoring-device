@@ -18,16 +18,16 @@
 
 
 int8_t Segments_Code[10] = {0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
-int16_t Digits[4];
+int8_t Digits[4];
 uint16_t ADC_Value=0;
 float Vin;
-int Vin_convert;
+uint32_t Vin_convert;
 int8_t check =0;
 
 void SevenSeg1_Write( void);
 void display_data(void);
 void ADC_Init(void);
-int ADC_Read(int ADC_channel);
+uint16_t ADC_Read(int ADC_channel);
 
 
 void main(void) {
@@ -62,12 +62,12 @@ void main(void) {
          if(Vin>=10.0)
          {
              check =0;
-             Vin_convert = Vin*100;
+             Vin_convert =(uint32_t) Vin*100;
          }
          else
          {
              check=1;
-             Vin_convert =Vin*1000;
+             Vin_convert =(uint32_t)Vin*1000;
          }
          
     
@@ -135,7 +135,7 @@ void ADC_Init(void)
     ADCON1= (1<<SBIT_ADFM);// All pins are configured as Analog pins and ADC result is right justified  
     
 }
-int ADC_Read(int ADC_channel)
+uint16_t ADC_Read(int ADC_channel)
 {
     ADCON0=(1<<SBIT_ADON) | (ADC_channel<<SBIT_CHS0);//select required channel and turn ON adc
     __delay_ms(100);                   //Acquisition Time(Wait for Charge Hold Capacitor to get charged )
