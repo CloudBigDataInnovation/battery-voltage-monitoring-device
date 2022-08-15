@@ -7,7 +7,7 @@
 #include"config.h"
 #include<stdint.h>
 #include<stdio.h>
-
+#include<stdbool.h>
 #define _XTAL_FREQ 20000000
 #define SevenSeg1 PORTD
 #define SevenSeg1_D TRISD
@@ -17,17 +17,17 @@
 
 
 
-int8_t Segments_Code[10] = {0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
-int8_t Digits[4];
-uint16_t ADC_Value=0;
+char Segments_Code[10] = {0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
+int Digits[4];
+int ADC_Value=0;
 float Vin;
-uint32_t Vin_convert;
-int8_t check =0;
+int Vin_convert;
+bool volatile check =0;
 
 void SevenSeg1_Write( void);
 void display_data(void);
 void ADC_Init(void);
-uint16_t ADC_Read(int ADC_channel);
+int ADC_Read(uint8_t ADC_channel);
 
 
 void main(void) {
@@ -62,12 +62,12 @@ void main(void) {
          if(Vin>=10.0)
          {
              check =0;
-             Vin_convert =(uint32_t) Vin*100;
+             Vin_convert = Vin*100;
          }
          else
          {
              check=1;
-             Vin_convert =(uint32_t)Vin*1000;
+             Vin_convert =Vin*1000;
          }
          
     
@@ -102,7 +102,9 @@ void __interrupt() ISR(void)
 void display_data(void)
 {
 	
-		
+	if(check==0)
+    {
+    // this case for voltage >=10 v
     SevenSeg1 = Segments_Code[Digits[0]];
     PORTCbits.RC0 = 0;//on 
     __delay_ms(3);
@@ -123,10 +125,34 @@ void display_data(void)
     PORTCbits.RC3 = 0;//on 
     __delay_ms(3);
     PORTCbits.RC3 = 1;//off
-   
         
-	
-	
+    }
+    else
+    {
+    // this case for voltage <10 v
+    SevenSeg1 = Segments_Code[Digits[0]];
+    PORTCbits.RC0 = 0;//on 
+    PORTDbits.RD7 = 1;// on dot at digit kth 1
+    __delay_ms(3);
+    PORTCbits.RC0 = 1;//off
+    
+    SevenSeg1 = Segments_Code[Digits[1]];
+    PORTCbits.RC1 = 0;//on 
+    
+    __delay_ms(3);
+    PORTCbits.RC1 = 1;//off
+    
+    SevenSeg1 = Segments_Code[Digits[2]];
+    PORTCbits.RC2 = 0;//on 
+    __delay_ms(3);
+    PORTCbits.RC2 = 1;//off
+    
+    SevenSeg1 = Segments_Code[Digits[3]];
+    PORTCbits.RC3 = 0;//on 
+    __delay_ms(3);
+    PORTCbits.RC3 = 1;//off
+        
+    }
     
 }
 void ADC_Init(void)
@@ -135,7 +161,7 @@ void ADC_Init(void)
     ADCON1= (1<<SBIT_ADFM);// All pins are configured as Analog pins and ADC result is right justified  
     
 }
-uint16_t ADC_Read(int ADC_channel)
+int ADC_Read(uint8_t ADC_channel)
 {
     ADCON0=(1<<SBIT_ADON) | (ADC_channel<<SBIT_CHS0);//select required channel and turn ON adc
     __delay_ms(100);                   //Acquisition Time(Wait for Charge Hold Capacitor to get charged )

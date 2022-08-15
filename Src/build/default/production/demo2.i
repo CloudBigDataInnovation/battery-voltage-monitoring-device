@@ -2748,18 +2748,21 @@ extern int vsscanf(const char *, const char *, va_list) __attribute__((unsupport
 extern int sprintf(char *, const char *, ...);
 extern int printf(const char *, ...);
 # 9 "demo2.c" 2
+
+# 1 "C:\\Program Files\\Microchip\\xc8\\v2.32\\pic\\include\\c90\\stdbool.h" 1 3
+# 10 "demo2.c" 2
 # 20 "demo2.c"
-int8_t Segments_Code[10] = {0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
-int8_t Digits[4];
-uint16_t ADC_Value=0;
+char Segments_Code[10] = {0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
+int Digits[4];
+int ADC_Value=0;
 float Vin;
-uint32_t Vin_convert;
-int8_t check =0;
+int Vin_convert;
+_Bool volatile check =0;
 
 void SevenSeg1_Write( void);
 void display_data(void);
 void ADC_Init(void);
-uint16_t ADC_Read(int ADC_channel);
+int ADC_Read(uint8_t ADC_channel);
 
 
 void main(void) {
@@ -2794,12 +2797,12 @@ void main(void) {
          if(Vin>=10.0)
          {
              check =0;
-             Vin_convert =(uint32_t) Vin*100;
+             Vin_convert = Vin*100;
          }
          else
          {
              check=1;
-             Vin_convert =(uint32_t)Vin*1000;
+             Vin_convert =Vin*1000;
          }
 
 
@@ -2834,6 +2837,8 @@ void __attribute__((picinterrupt(("")))) ISR(void)
 void display_data(void)
 {
 
+ if(check==0)
+    {
 
     PORTD = Segments_Code[Digits[0]];
     PORTCbits.RC0 = 0;
@@ -2856,6 +2861,34 @@ void display_data(void)
     _delay((unsigned long)((3)*(20000000/4000.0)));
     PORTCbits.RC3 = 1;
 
+    }
+    else
+    {
+
+    PORTD = Segments_Code[Digits[0]];
+    PORTCbits.RC0 = 0;
+    PORTDbits.RD7 = 1;
+    _delay((unsigned long)((3)*(20000000/4000.0)));
+    PORTCbits.RC0 = 1;
+
+    PORTD = Segments_Code[Digits[1]];
+    PORTCbits.RC1 = 0;
+
+    _delay((unsigned long)((3)*(20000000/4000.0)));
+    PORTCbits.RC1 = 1;
+
+    PORTD = Segments_Code[Digits[2]];
+    PORTCbits.RC2 = 0;
+    _delay((unsigned long)((3)*(20000000/4000.0)));
+    PORTCbits.RC2 = 1;
+
+    PORTD = Segments_Code[Digits[3]];
+    PORTCbits.RC3 = 0;
+    _delay((unsigned long)((3)*(20000000/4000.0)));
+    PORTCbits.RC3 = 1;
+
+    }
+
 
 
 
@@ -2867,7 +2900,7 @@ void ADC_Init(void)
     ADCON1= (1<<7);
 
 }
-uint16_t ADC_Read(int ADC_channel)
+int ADC_Read(uint8_t ADC_channel)
 {
     ADCON0=(1<<0) | (ADC_channel<<2);
     _delay((unsigned long)((100)*(20000000/4000.0)));
